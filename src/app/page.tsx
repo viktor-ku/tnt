@@ -1,10 +1,12 @@
 'use client';
 
-import { formatDistanceStrict } from "date-fns";
 import { useState, ChangeEventHandler, FormEventHandler, Key, useEffect } from "react"
+import { v4 as uuid } from 'uuid'
+import { chunk } from 'lodash'
 
 interface Task {
-  title: String,
+  id: string,
+  title: string,
   timeline: number[],
   createdAt: number,
 }
@@ -13,17 +15,14 @@ const SECONDS = 1000
 const MINUTE = SECONDS * 60
 const HOUR = MINUTE * 60
 
-function elapsed(sinceMs: number): string {
-  const now = Date.now()
-  let diff = now - sinceMs
+function fmt(ms: number): string {
+  const hours = Math.floor(ms / HOUR)
+  ms -= hours * HOUR
 
-  const hours = Math.floor(diff / HOUR)
-  diff -= hours * HOUR
+  const minutes = Math.floor(ms / MINUTE)
+  ms -= minutes * MINUTE
 
-  const minutes = Math.floor(diff / MINUTE)
-  diff -= minutes * MINUTE
-
-  const seconds = Math.floor(diff / SECONDS)
+  const seconds = Math.floor(ms / SECONDS)
 
   const fmt = []
 
@@ -34,8 +33,28 @@ function elapsed(sinceMs: number): string {
   return fmt.join(' ')
 }
 
+function elapsed(timeline: number[]): string {
+  const pairs = isOdd(timeline.length) ? [...timeline, Date.now()] : [...timeline];
+
+  const total = chunk(pairs, 2)
+    .reduce((acc, [start, end]) => {
+      return acc + (end - start)
+    }, 0)
+
+  return fmt(total)
+}
+
+function isOdd(n: number): boolean {
+  return n % 2 !== 0
+}
+
+function isEven(n: number): boolean {
+  return !isOdd(n)
+}
+
 function createTask({ title, createdAt }: Pick<Task, 'title' | 'createdAt'>): Task {
   return {
+    id: uuid(),
     title,
     timeline: [createdAt],
     createdAt,
@@ -60,7 +79,7 @@ export default function Home() {
   useEffect(() => {
     const id = setInterval(() => {
       setTasks(tasks => {
-        return tasks.map(task => ({ ...task }))
+        return tasks.map(task => isOdd(task.timeline.length) ? ({ ...task }) : task)
       })
     }, 1000)
 
@@ -68,6 +87,20 @@ export default function Home() {
       clearInterval(id)
     }
   }, [])
+
+  const handleStopTask = (id: string) => {
+    setTasks(tasks => {
+      return tasks.map(task => {
+        if (task.id === id) {
+          return {
+            ...task,
+            timeline: [...task.timeline, Date.now()]
+          }
+        }
+        return task
+      })
+    })
+  }
 
   return (
     <div className="m-16 flex flex-col">
@@ -90,10 +123,16 @@ export default function Home() {
         {tasks.length === 0 ? (
           <p className="font-thin text-center">you have no running tasks currently.</p>
         ) : null}
-        {tasks.map(task => (
-          <div key={task.title as Key} className="flex p-2 items-center justify-between">
-            <p>{task.title}</p>
-            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{elapsed(task.createdAt) || '0s'}</p>
+        {tasks.filter(task => isOdd(task.timeline.length)).map(task => (
+          <div key={task.title as Key} className="flex p-2 items-center">
+            <button
+              onClick={handleStopTask.bind(null, task.id)}
+              className="uppercase font-bold text-sm text-orange-600 mr-4 bg-orange-50 p-1 pr-2 pl-2 rounded-sm"
+            >
+              stop
+            </button>
+            <p className="flex-1">{task.title}</p>
+            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{elapsed(task.timeline) || '0s'}</p>
           </div>
         ))}
       </div>
@@ -101,6 +140,18 @@ export default function Home() {
       <div className="rounded-lg w-[40rem] mt-8 p-4 m-auto grid gap-4">
         <h3 className="uppercase font-thin text-xl">paused.</h3>
         <p className="font-thin text-center">you have no paused tasks currently.</p>
+        {tasks.filter(task => !isOdd(task.timeline.length)).map(task => (
+          <div key={task.title as Key} className="flex p-2 items-center">
+            <button
+              onClick={handleStopTask.bind(null, task.id)}
+              className="uppercase font-bold text-sm text-blue-600 mr-4 bg-blue-50 p-1 pr-2 pl-2 rounded-sm"
+            >
+              start
+            </button>
+            <p className="flex-1">{task.title}</p>
+            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{elapsed(task.timeline) || '0s'}</p>
+          </div>
+        ))}
       </div>
 
     </div>
