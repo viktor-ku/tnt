@@ -1,3 +1,4 @@
+import { isOdd } from "@/utilities/isOdd";
 import { v4 as uuid } from "uuid";
 import { IRecord, Record } from "./record";
 
@@ -19,5 +20,10 @@ export const Task = {
     if (!self.timeline.length)
       throw new Error('Found an empty timeline')
     return new Date(self.timeline[0].at)
+  },
+  isRunning(self: ITask): boolean {
+    if (!self.timeline.length)
+      throw new Error('Found an empty timeline')
+    return isOdd(self.timeline.length)
   }
 }
