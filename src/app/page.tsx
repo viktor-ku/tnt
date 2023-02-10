@@ -101,7 +101,7 @@ export default function Home() {
               )
             }
             <p className="flex-1">{task.title}</p>
-            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{Record.elapsed(task.timeline) || '0s'}</p>
+            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{Record.elapsed(task.timeline)}</p>
           </div>
         ))}
       </div>

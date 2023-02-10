@@ -15,7 +15,7 @@ export function fmt(ms: number): string {
 
   if (hours) fmt.push(`${hours}h`)
   if (minutes) fmt.push(`${minutes}m`)
-  if (seconds) fmt.push(`${seconds}s`)
+  fmt.push(`${seconds}s`)
 
   return fmt.join(' ')
 }
