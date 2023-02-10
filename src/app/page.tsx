@@ -1,73 +1,17 @@
 'use client';
 
 import { useState, ChangeEventHandler, FormEventHandler, Key, useEffect } from "react"
-import { v4 as uuid } from 'uuid'
-import { chunk } from 'lodash'
-
-interface Task {
-  id: string,
-  title: string,
-  timeline: number[],
-  createdAt: number,
-}
-
-const SECONDS = 1000
-const MINUTE = SECONDS * 60
-const HOUR = MINUTE * 60
-
-function fmt(ms: number): string {
-  const hours = Math.floor(ms / HOUR)
-  ms -= hours * HOUR
-
-  const minutes = Math.floor(ms / MINUTE)
-  ms -= minutes * MINUTE
-
-  const seconds = Math.floor(ms / SECONDS)
-
-  const fmt = []
-
-  if (hours) fmt.push(`${hours}h`)
-  if (minutes) fmt.push(`${minutes}m`)
-  if (seconds) fmt.push(`${seconds}s`)
-
-  return fmt.join(' ')
-}
-
-function elapsed(timeline: number[]): string {
-  const pairs = isOdd(timeline.length) ? [...timeline, Date.now()] : [...timeline];
-
-  const total = chunk(pairs, 2)
-    .reduce((acc, [start, end]) => {
-      return acc + (end - start)
-    }, 0)
-
-  return fmt(total)
-}
-
-function isOdd(n: number): boolean {
-  return n % 2 !== 0
-}
-
-function isEven(n: number): boolean {
-  return !isOdd(n)
-}
-
-function createTask({ title, createdAt }: Pick<Task, 'title' | 'createdAt'>): Task {
-  return {
-    id: uuid(),
-    title,
-    timeline: [createdAt],
-    createdAt,
-  }
-}
+import { ITask, Task } from "@/entity/task";
+import { Record } from "@/entity/record";
+import { isOdd } from "@/utilities/isOdd";
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<ITask[]>([])
   const [newTask, setNewTask] = useState({ desc: '' })
 
   const handleTaskCreate: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    setTasks(tasks => ([...tasks, createTask({ title: newTask.desc, createdAt: Date.now() })]))
+    setTasks(tasks => ([...tasks, Task.with({ title: newTask.desc, createdAt: Date.now() })]))
     setNewTask({ desc: '' })
   }
 
@@ -94,7 +38,7 @@ export default function Home() {
         if (task.id === id) {
           return {
             ...task,
-            timeline: [...task.timeline, Date.now()]
+            timeline: [...task.timeline, Record.at(Date.now())]
           }
         }
         return task
@@ -132,7 +76,7 @@ export default function Home() {
               stop
             </button>
             <p className="flex-1">{task.title}</p>
-            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{elapsed(task.timeline) || '0s'}</p>
+            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{Record.elapsed(task.timeline) || '0s'}</p>
           </div>
         ))}
       </div>
@@ -149,7 +93,7 @@ export default function Home() {
               start
             </button>
             <p className="flex-1">{task.title}</p>
-            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{elapsed(task.timeline) || '0s'}</p>
+            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{Record.elapsed(task.timeline) || '0s'}</p>
           </div>
         ))}
       </div>
