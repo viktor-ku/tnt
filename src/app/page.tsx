@@ -4,6 +4,7 @@ import { useState, ChangeEventHandler, FormEventHandler, useEffect } from "react
 import { ITask, Task } from "@/entity/task";
 import { Record } from "@/entity/record";
 import { isOdd } from "@/utilities/isOdd";
+import Link from "next/link";
 
 export default function Home() {
   const [tasks, setTasks] = useState<ITask[]>([])
@@ -61,51 +62,67 @@ export default function Home() {
   }
 
   return (
-    <div className="m-16 flex flex-col">
+    <div className="flex">
 
-      <form className="flex bg-gray-100" onSubmit={handleTaskCreate}>
-        <div className="m-4 flex">
-          <button type="button" className="uppercase font-bold text-blue-600">start</button>
+      <nav className="w-[14rem] h-screen border-gray-100 border-r m-2">
+
+        <p className="text-2xl uppercase text-blue-700 p-4 pl-2 mb-2">
+          tnt.
+        </p>
+
+        <div className="w-[14rem] grid gap-1">
+          <Link className="uppercase font-bold text-gray-700 text-sm p-0 pr-2 pl-2" href="/">Timers</Link>
         </div>
-        <input
-          type="text"
-          className="w-full p-4 bg-transparent"
-          placeholder="what are you working on?"
-          onChange={handleTaskDescChange}
-          value={newTask.desc}
-        />
-      </form>
+  
+        
+      </nav>
 
-      <div className="rounded-lg mt-8 p-4 grid gap-4">
-        {tasks.length === 0 ? (
-          <p className="font-thin text-center">you have no running tasks currently.</p>
-        ) : null}
-        {tasks.map(task => (
-          <div key={task.id} className="flex p-2 items-center">
-            {Task.isRunning(task)
-              ? (
-                <button
-                  onClick={handleStopTask.bind(null, task.id)}
-                  className="uppercase font-bold text-sm text-orange-600 mr-4 bg-orange-50 p-1 pr-2 pl-2 rounded-sm"
-                >
-                  stop
-                </button>
-              )
-              : (
-                <button
-                  onClick={handleStartTask.bind(null, task.id)}
-                  className="uppercase font-bold text-sm text-blue-600 mr-4 bg-blue-50 p-1 pr-2 pl-2 rounded-sm"
-                >
-                  start
-                </button>
-              )
-            }
-            <p className="flex-1">{task.title}</p>
-            <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{Record.elapsed(task.timeline)}</p>
+      <main className="m-16 flex flex-col flex-1">
+
+        <form className="flex bg-gray-100" onSubmit={handleTaskCreate}>
+          <div className="m-4 flex">
+            <button type="button" className="uppercase font-bold text-blue-600">start</button>
           </div>
-        ))}
-      </div>
+          <input
+            type="text"
+            className="w-full p-4 bg-transparent"
+            placeholder="what are you working on?"
+            onChange={handleTaskDescChange}
+            value={newTask.desc}
+          />
+        </form>
 
+        <div className="rounded-lg mt-8 p-4 grid gap-4">
+          {tasks.length === 0 ? (
+            <p className="font-thin text-center">you have no running tasks currently.</p>
+          ) : null}
+          {tasks.map(task => (
+            <div key={task.id} className="flex p-2 items-center">
+              {Task.isRunning(task)
+                ? (
+                  <button
+                    onClick={handleStopTask.bind(null, task.id)}
+                    className="uppercase font-bold text-sm text-orange-600 mr-4 bg-orange-50 p-1 pr-2 pl-2 rounded-sm"
+                  >
+                    stop
+                  </button>
+                )
+                : (
+                  <button
+                    onClick={handleStartTask.bind(null, task.id)}
+                    className="uppercase font-bold text-sm text-blue-600 mr-4 bg-blue-50 p-1 pr-2 pl-2 rounded-sm"
+                  >
+                    start
+                  </button>
+                )
+              }
+              <p className="flex-1">{task.title}</p>
+              <p className="text-gray-600 font-bold text-sm border border-blue-100 bg-blue-100 p-1 rounded-lg">{Record.elapsed(task.timeline)}</p>
+            </div>
+          ))}
+        </div>
+
+      </main>
     </div>
   )
 }
