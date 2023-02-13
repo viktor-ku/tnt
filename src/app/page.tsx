@@ -7,18 +7,22 @@ import { isOdd } from "@/utilities/isOdd";
 import Link from "next/link";
 import PickClientModal from '@/components/PickClientModal'
 import { Client, IClient } from "@/entity/client";
+import { defCurrencies } from "@/entity/currency";
+
+const CUR_EUR = defCurrencies.find((curr) => curr.name === 'EUR')!
 
 export default function Home() {
   const [tasks, setTasks] = useState<ITask[]>([])
   const [newTask, setNewTask] = useState({ desc: '' })
 
+  const [rate, setRate] = useState(50)
   const [isOpen, setIsOpen] = useState(true)
   const [clients, setClients] = useState<IClient[]>(() => [
-    Client.with({ name: 'One Two OU' }),
-    Client.with({ name: 'Two Three OU' }),
-    Client.with({ name: 'Three Four OU' }),
-    Client.with({ name: 'Four Five OU' }),
-    Client.with({ name: 'Five Six OU' }),
+    Client.with({ name: 'One Two OU', rate: { currencyId: CUR_EUR.id, rate: 10 } }),
+    Client.with({ name: 'Two Three OU', rate: { currencyId: CUR_EUR.id, rate: 20 } }),
+    Client.with({ name: 'Three Four OU', rate: { currencyId: CUR_EUR.id, rate: 30 } }),
+    Client.with({ name: 'Four Five OU', rate: { currencyId: CUR_EUR.id, rate: 40 } }),
+    Client.with({ name: 'Five Six OU', rate: { currencyId: CUR_EUR.id, rate: 50 } }),
   ]);
 
   const handleClientPick = (client: IClient & { dirty: boolean }) => {
@@ -86,11 +90,11 @@ export default function Home() {
         open={isOpen}
         onClose={() => setIsOpen(false)}
         clients={clients}
+        currencies={defCurrencies}
         onSubmit={handleClientPick}
       />
 
       <div className="flex h-screen">
-
 
         <nav className="w-[14rem] h-full border-gray-100 border-r m-2">
 

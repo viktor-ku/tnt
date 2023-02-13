@@ -1,34 +1,43 @@
 import { Client, IClient, IClientMeta } from '@/entity/client'
+import { ICurrency } from '@/entity/currency'
 import { Dialog, Combobox } from '@headlessui/react'
 import { useState } from 'react'
 
 export interface Props {
   open: boolean
   clients: IClient[]
+  currencies: ICurrency[]
   onClose(value: boolean): void
   onSubmit(data: IClient & { dirty: boolean }): void
 }
 
 export default function PickClientModal(props: Props) {
-  const { open, onClose, onSubmit, clients } = props
+  const { open, onClose, onSubmit, clients, currencies } = props
 
   const [clientPickMode, setClientPickMode] = useState<'createpick' | 'pick' | 'none'>('none')
   const [selectedClient, setSelectedClient] = useState<IClient | null>(null)
   const [clientQuery, setClientQuery] = useState('')
+  const [rate, setRate] = useState(0)
   const [clientMeta, setClientMeta] = useState<IClientMeta>({
     address: '',
     phone: '',
     email: '',
     notes: ''
   })
+  const [currency, setCurrency] = useState<ICurrency>(currencies.find((currency) => currency.name === 'EUR')!)
+  const [currencyQuery, setCurrencyQuery] = useState('EUR')
 
   const clientResults = clientQuery
     ? clients.filter((client) => client.name.toLowerCase().includes(clientQuery.toLowerCase()))
     : clients
 
+  const currencyResults = currencyQuery
+    ? currencies.filter((val) => val.name.toLowerCase().includes(currencyQuery.toLowerCase()))
+    : currencies
+
   function handleInputSelect(val: IClient | 'new') {
     if (val === 'new') {
-      setSelectedClient(Client.with({ name: clientQuery }))
+      setSelectedClient(Client.with({ name: clientQuery, rate: { rate: 0, currencyId: currencies.find((curr) => curr.name === 'EUR')!.id } }))
       setClientPickMode('createpick')
     } else {
       setSelectedClient(val)
@@ -42,8 +51,12 @@ export default function PickClientModal(props: Props) {
     }
 
     if (clientPickMode === 'createpick') {
-      const output = {
+      const output: IClient = {
         ...selectedClient,
+        rate: {
+          currencyId: currency.id,
+          rate
+        },
         meta: {
           ...clientMeta
         }
@@ -57,10 +70,14 @@ export default function PickClientModal(props: Props) {
     }
   }
 
+  function handleSelectCurrency(val: ICurrency) {
+    setCurrency(val)
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
 
-      <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+      <div className="fixed inset-0 bg-black/50" aria-hidden="true"></div>
 
       <div className="fixed inset-0 flex items-center justify-center">
 
@@ -101,6 +118,43 @@ export default function PickClientModal(props: Props) {
 
             {clientPickMode === 'createpick' && (
               <div className="flex flex-col">
+
+                <div className="flex flex-col mt-4">
+                  <label htmlFor="rate" className="uppercase text-xs font-bold text-gray-500">hourly rate</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      value={rate}
+                      onChange={(e) => setRate(Number(e.target.value))}
+                      id="rate"
+                      type="number"
+                      className="p-2 bg-gray-100 rounded-none mt-1 flex-1"
+                      placeholder="hourly rate, e.g. 20"
+                    />
+                    <div className="relative">
+                      <Combobox value={currency} onChange={handleSelectCurrency}>
+                        <Combobox.Input
+                          className="p-2 bg-gray-100 rounded-none mt-1 w-full"
+                          onChange={(e) => setCurrencyQuery(e.target.value)}
+                          displayValue={(client: IClient) => client?.name || clientQuery}
+                          placeholder="start typing clients name"
+                          autoComplete="off"
+                        />
+                        <Combobox.Options className="bg-gray-100 absolute top-full w-full">
+                          {currencyResults.map((curr) => (
+                            <Combobox.Option
+                              key={curr.id}
+                              value={curr}
+                              className="p-2"
+                            >
+                              {curr.name}
+                            </Combobox.Option>
+                          ))}
+                        </Combobox.Options>
+                      </Combobox>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex flex-col mt-4">
                   <label htmlFor="email" className="uppercase text-xs font-bold text-gray-500">email</label>
                   <input
