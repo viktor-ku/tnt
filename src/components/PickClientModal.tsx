@@ -97,7 +97,7 @@ export default function PickClientModal(props: Props) {
                 placeholder="start typing clients name"
                 autoComplete="off"
               />
-              <Combobox.Options className="bg-gray-100 absolute top-full inset-x-0">
+              <Combobox.Options className="z-50 bg-white border border-black/10 absolute top-16 inset-x-0">
                 {clientQuery.length && !clients.find((p) => p.name.toLowerCase() === clientQuery.toLowerCase()) ? (
                   <Combobox.Option className="p-2" key="new" value="new">
                     <span className="uppercase font-bold text-xs text-green-600">+ create</span>
@@ -139,7 +139,7 @@ export default function PickClientModal(props: Props) {
                           placeholder="start typing clients name"
                           autoComplete="off"
                         />
-                        <Combobox.Options className="bg-gray-100 absolute top-full w-full">
+                        <Combobox.Options className="bg-white absolute top-12 border border-black/10 w-full">
                           {currencyResults.map((curr) => (
                             <Combobox.Option
                               key={curr.id}
