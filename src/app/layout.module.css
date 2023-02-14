@@ -1,0 +1,20 @@
+.body {
+  display: grid;
+  grid-template-columns: 14rem 1fr;
+  grid-template-rows: 3.5rem 1fr;
+  grid-template-areas: 
+    "logo top"
+    "side main";
+}
+.logo {
+  grid-area: logo;
+}
+.side {
+  grid-area: side;
+}
+.header {
+  grid-area: top;
+}
+.main {
+  grid-area: main;
+}
