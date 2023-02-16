@@ -2,6 +2,7 @@ import { Client, IClient, IClientMeta } from '@/entity/client'
 import { ICurrency } from '@/entity/currency'
 import { Dialog, Combobox } from '@headlessui/react'
 import { useState } from 'react'
+import CurrencyPicker from './CurrencyPicker'
 
 export interface Props {
   open: boolean
@@ -14,6 +15,7 @@ export interface Props {
 export default function PickClientModal(props: Props) {
   const { open, onClose, onSubmit, clients, currencies } = props
 
+  const [currency, setCurrency] = useState<ICurrency>(currencies.find((currency) => currency.name === 'EUR')!)
   const [clientPickMode, setClientPickMode] = useState<'createpick' | 'pick' | 'none'>('none')
   const [selectedClient, setSelectedClient] = useState<IClient | null>(null)
   const [clientQuery, setClientQuery] = useState('')
@@ -24,16 +26,10 @@ export default function PickClientModal(props: Props) {
     email: '',
     notes: ''
   })
-  const [currency, setCurrency] = useState<ICurrency>(currencies.find((currency) => currency.name === 'EUR')!)
-  const [currencyQuery, setCurrencyQuery] = useState('EUR')
 
   const clientResults = clientQuery
     ? clients.filter((client) => client.name.toLowerCase().includes(clientQuery.toLowerCase()))
     : clients
-
-  const currencyResults = currencyQuery
-    ? currencies.filter((val) => val.name.toLowerCase().includes(currencyQuery.toLowerCase()))
-    : currencies
 
   function handleInputSelect(val: IClient | 'new') {
     if (val === 'new') {
@@ -131,26 +127,11 @@ export default function PickClientModal(props: Props) {
                       placeholder="hourly rate, e.g. 20"
                     />
                     <div className="relative">
-                      <Combobox value={currency} onChange={handleSelectCurrency}>
-                        <Combobox.Input
-                          className="p-2 bg-gray-100 rounded-none mt-1 w-full"
-                          onChange={(e) => setCurrencyQuery(e.target.value)}
-                          displayValue={(client: IClient) => client?.name || clientQuery}
-                          placeholder="start typing clients name"
-                          autoComplete="off"
-                        />
-                        <Combobox.Options className="bg-white absolute top-12 border border-black/10 w-full">
-                          {currencyResults.map((curr) => (
-                            <Combobox.Option
-                              key={curr.id}
-                              value={curr}
-                              className="p-2"
-                            >
-                              {curr.name}
-                            </Combobox.Option>
-                          ))}
-                        </Combobox.Options>
-                      </Combobox>
+                      <CurrencyPicker
+                        defaultCurrency={currency}
+                        onSubmit={handleSelectCurrency}
+                        currencies={currencies}
+                      />
                     </div>
                   </div>
                 </div>

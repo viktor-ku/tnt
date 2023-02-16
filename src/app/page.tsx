@@ -1,21 +1,24 @@
 'use client';
 
-import { useState, ChangeEventHandler, FormEventHandler, useEffect } from "react"
+import { useState, ChangeEventHandler, FormEventHandler, useEffect, useRef } from "react"
 import { ITask, Task } from "@/entity/task";
 import { Record } from "@/entity/record";
 import { isOdd } from "@/utilities/isOdd";
 import PickClientModal from '@/components/PickClientModal'
 import { Client, IClient } from "@/entity/client";
-import { defCurrencies } from "@/entity/currency";
+import { defCurrencies, ICurrency } from "@/entity/currency";
 import { v4 as uuid } from 'uuid'
+import CurrencyPicker from "@/components/CurrencyPicker";
 
 const CUR_EUR = defCurrencies.find((curr) => curr.name === 'EUR')!
 
 export default function Home() {
   const [tasks, setTasks] = useState<ITask[]>([])
-  const [newTask, setNewTask] = useState({ desc: '', clientId: '' })
-
   const [rate, setRate] = useState(50)
+  const [newTask, setNewTask] = useState({ desc: '', clientId: '', rate: 50 })
+  const numberInputRef = useRef<HTMLInputElement | null>(null)
+
+  const [currency, setCurrency] = useState<ICurrency>(defCurrencies.find((currency) => currency.name === 'EUR')!)
   const [isOpen, setIsOpen] = useState(false)
   const [clientModalId, setClientModalId] = useState(uuid())
   const [clients, setClients] = useState<IClient[]>(() => [
@@ -39,7 +42,7 @@ export default function Home() {
   const handleTaskCreate: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     setTasks(tasks => ([...tasks, Task.with({ title: newTask.desc, createdAt: Date.now() })]))
-    setNewTask({ desc: '', clientId: '' })
+    setNewTask({ desc: '', clientId: '', rate: 50 })
   }
 
   const handleTaskDescChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -91,6 +94,14 @@ export default function Home() {
     setIsOpen(true)
   }
 
+  const handleTaskNumberInputFocus = () => {
+    numberInputRef.current?.select()
+  }
+
+  function handleSelectCurrency(val: ICurrency) {
+    setCurrency(val)
+  }
+
   return (
     <>
       <PickClientModal
@@ -103,10 +114,25 @@ export default function Home() {
       />
 
       <form className="flex bg-gray-100" onSubmit={handleTaskCreate}>
-        <button type="submit" className="uppercase font-bold text-sm text-blue-600 px-4 hover:bg-blue-50">start</button>
-        <button type="button" className="uppercase font-bold text-xs text-gray-500 px-4" onClick={handleChooseClient}>
+        <button type="submit" className="uppercase font-bold text-sm text-blue-600 px-3">start</button>
+        <button type="button" className="uppercase text-xs text-gray-500 px-3" onClick={handleChooseClient}>
           {newTask.clientId ? clients.find((client) => newTask.clientId === client.id)!.name : 'no client'}
         </button>
+        <div className="flex items-center w-12 pl-2">
+          <CurrencyPicker
+            defaultCurrency={currency}
+            onSubmit={handleSelectCurrency}
+            currencies={defCurrencies}
+          />
+        </div>
+        <input
+          type="number"
+          onChange={(e) => setNewTask((val) => ({ ...val, rate: Number(e.target.value) }))}
+          className="text-sm text-gray-500 w-20 px-3 bg-gray-100"
+          ref={numberInputRef}
+          onFocus={handleTaskNumberInputFocus}
+          value={newTask.rate}
+        />
         <input
           type="text"
           className="flex-1 p-4 bg-transparent"
