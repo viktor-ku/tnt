@@ -7,6 +7,7 @@ import { isOdd } from "@/utilities/isOdd";
 import PickClientModal from '@/components/PickClientModal'
 import { Client, IClient } from "@/entity/client";
 import { defCurrencies } from "@/entity/currency";
+import { v4 as uuid } from 'uuid'
 
 const CUR_EUR = defCurrencies.find((curr) => curr.name === 'EUR')!
 
@@ -16,6 +17,7 @@ export default function Home() {
 
   const [rate, setRate] = useState(50)
   const [isOpen, setIsOpen] = useState(false)
+  const [clientModalId, setClientModalId] = useState(uuid())
   const [clients, setClients] = useState<IClient[]>(() => [
     Client.with({ name: 'One Two OU', rate: { currencyId: CUR_EUR.id, rate: 10 } }),
     Client.with({ name: 'Two Three OU', rate: { currencyId: CUR_EUR.id, rate: 20 } }),
@@ -31,6 +33,7 @@ export default function Home() {
 
     setNewTask((val) => ({ ...val, clientId: client.id }))
     setIsOpen(false)
+    setClientModalId(uuid())
   }
 
   const handleTaskCreate: FormEventHandler<HTMLFormElement> = (e) => {
@@ -91,6 +94,7 @@ export default function Home() {
   return (
     <>
       <PickClientModal
+        key={clientModalId}
         open={isOpen}
         onClose={() => setIsOpen(false)}
         clients={clients}
