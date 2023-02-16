@@ -24,6 +24,7 @@ export default function RootLayout({
             <div className="grid gap-1">
               <Link className="uppercase font-bold text-gray-700 text-sm p-0 pr-2 pl-2" href="/">Timers</Link>
               <Link className="uppercase font-bold text-gray-700 text-sm p-0 pr-2 pl-2" href="/invoices">Invoices</Link>
+              <Link className="uppercase font-bold text-gray-700 text-sm p-0 pr-2 pl-2" href="/settings">Settings</Link>
             </div>
           </aside>
 
