@@ -1,15 +1,17 @@
 import { ICurrency } from "@/entity/currency";
 import { Combobox } from '@headlessui/react'
+import clsx from "clsx";
 import { ChangeEventHandler, KeyboardEventHandler, useMemo, useRef, useState } from "react";
 
 export interface Props {
   currencies: ICurrency[]
   defaultCurrency: ICurrency
   onSubmit(currency: ICurrency): void
+  chip?: boolean
 }
 
 export default function CurrencyPicker(props: Props) {
-  const { defaultCurrency, currencies, onSubmit } = props
+  const { defaultCurrency, currencies, onSubmit, chip = false } = props
 
   const [currency, setCurrency] = useState<ICurrency>(defaultCurrency)
   const [query, setQuery] = useState(currency.name)
@@ -52,14 +54,14 @@ export default function CurrencyPicker(props: Props) {
   }, [query, showOptions])
 
   return (
-    <div className="relative">
+    <div className={clsx({"flex self-stretch": !chip}, "relative")}>
       <Combobox value={currency} onChange={handleSelectCurrency}>
         {({ open }) => (
           <>
             <Combobox.Input
               ref={inputRef}
               onFocus={handleInputFocus}
-              className="p-2 bg-gray-200 rounded-md text-xs uppercase w-full text-center"
+              className={clsx("p-2 text-xs uppercase w-full bg-gray-100", { "rounded-md bg-gray-200 text-center": chip })}
               onChange={handleInputChange}
               onKeyDown={handleInputKeyDown}
               displayValue={(curr: ICurrency | null) => curr?.name || query}
@@ -67,7 +69,7 @@ export default function CurrencyPicker(props: Props) {
               autoComplete="off"
             />
             {(open || showOptions) ? (
-              <Combobox.Options static className="bg-white absolute top-12 border border-black/10 w-min">
+              <Combobox.Options static className="bg-white absolute top-12 border border-black/10">
                 {currencyResults.map((curr) => (
                   <Combobox.Option
                     key={curr.id}

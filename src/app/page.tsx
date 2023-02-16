@@ -6,11 +6,9 @@ import { Record } from "@/entity/record";
 import { isOdd } from "@/utilities/isOdd";
 import PickClientModal from '@/components/PickClientModal'
 import { Client, IClient } from "@/entity/client";
-import { defCurrencies, ICurrency } from "@/entity/currency";
+import { C_EUR, defCurrencies, ICurrency } from "@/entity/currency";
 import { v4 as uuid } from 'uuid'
 import CurrencyPicker from "@/components/CurrencyPicker";
-
-const CUR_EUR = defCurrencies.find((curr) => curr.name === 'EUR')!
 
 export default function Home() {
   const [tasks, setTasks] = useState<ITask[]>([])
@@ -22,11 +20,11 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false)
   const [clientModalId, setClientModalId] = useState(uuid())
   const [clients, setClients] = useState<IClient[]>(() => [
-    Client.with({ name: 'One Two OU', rate: { currencyId: CUR_EUR.id, rate: 10 } }),
-    Client.with({ name: 'Two Three OU', rate: { currencyId: CUR_EUR.id, rate: 20 } }),
-    Client.with({ name: 'Three Four OU', rate: { currencyId: CUR_EUR.id, rate: 30 } }),
-    Client.with({ name: 'Four Five OU', rate: { currencyId: CUR_EUR.id, rate: 40 } }),
-    Client.with({ name: 'Five Six OU', rate: { currencyId: CUR_EUR.id, rate: 50 } }),
+    Client.with({ name: 'One Two OU', rate: { currencyId: C_EUR.id, rate: 10 } }),
+    Client.with({ name: 'Two Three OU', rate: { currencyId: C_EUR.id, rate: 20 } }),
+    Client.with({ name: 'Three Four OU', rate: { currencyId: C_EUR.id, rate: 30 } }),
+    Client.with({ name: 'Four Five OU', rate: { currencyId: C_EUR.id, rate: 40 } }),
+    Client.with({ name: 'Five Six OU', rate: { currencyId: C_EUR.id, rate: 50 } }),
   ]);
 
   const handleClientPick = (client: IClient & { dirty: boolean }) => {
@@ -123,6 +121,7 @@ export default function Home() {
             defaultCurrency={currency}
             onSubmit={handleSelectCurrency}
             currencies={defCurrencies}
+            chip={true}
           />
         </div>
         <input

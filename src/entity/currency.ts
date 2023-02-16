@@ -5,13 +5,16 @@ export interface ICurrency {
   name: string
 }
 
+export const C_EUR = {
+  id: uuid(),
+  name: 'EUR',
+}
+export const C_USD = {
+  id: uuid(),
+  name: 'USD',
+}
+
 export const defCurrencies = [
-  {
-    id: uuid(),
-    name: 'USD',
-  },
-  {
-    id: uuid(),
-    name: 'EUR',
-  }
+  C_EUR,
+  C_USD,
 ]
