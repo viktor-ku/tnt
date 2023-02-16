@@ -1,6 +1,6 @@
 import { ICurrency } from "@/entity/currency";
 import { Combobox } from '@headlessui/react'
-import { ChangeEventHandler, useMemo, useState } from "react";
+import { ChangeEventHandler, KeyboardEventHandler, useMemo, useRef, useState } from "react";
 
 export interface Props {
   currencies: ICurrency[]
@@ -13,31 +13,43 @@ export default function CurrencyPicker(props: Props) {
 
   const [currency, setCurrency] = useState<ICurrency>(defaultCurrency)
   const [query, setQuery] = useState(currency.name)
-  const [forceShowOptions, setForceShowOptions] = useState(false)
+  const [showOptions, setShowOptions] = useState(false)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   function handleSelectCurrency(val: ICurrency) {
     setCurrency(val)
-    setForceShowOptions(false)
     onSubmit(val)
+    handleInputBlur()
   }
 
-  const showAllOptions = () => {
-    setQuery('')
-    setForceShowOptions(true)
+  const handleInputFocus = () => {
+    setShowOptions(true)
+    inputRef.current?.select()
+  }
+
+  const handleInputBlur = () => {
+    inputRef.current?.blur()
+    setShowOptions(false)
   }
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setForceShowOptions(false)
+    setShowOptions(false)
     setQuery(e.target.value)
   }
 
+  const handleInputKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === 'Escape') {
+      handleInputBlur()
+    }
+  }
+
   const currencyResults = useMemo(() => {
-    if (!query || forceShowOptions) {
+    if (!query || showOptions) {
       return currencies
     }
 
     return currencies.filter((val) => val.name.toLowerCase().includes(query.toLowerCase()))
-  }, [query, forceShowOptions])
+  }, [query, showOptions])
 
   return (
     <div className="relative">
@@ -45,20 +57,22 @@ export default function CurrencyPicker(props: Props) {
         {({ open }) => (
           <>
             <Combobox.Input
-              onFocus={showAllOptions}
+              ref={inputRef}
+              onFocus={handleInputFocus}
               className="p-2 bg-gray-200 rounded-md text-xs uppercase w-full text-center"
               onChange={handleInputChange}
+              onKeyDown={handleInputKeyDown}
               displayValue={(curr: ICurrency | null) => curr?.name || query}
               placeholder="e.g. USD"
               autoComplete="off"
             />
-            {(open || forceShowOptions) ? (
+            {(open || showOptions) ? (
               <Combobox.Options static className="bg-white absolute top-12 border border-black/10 w-min">
                 {currencyResults.map((curr) => (
                   <Combobox.Option
                     key={curr.id}
                     value={curr}
-                    className="p-2"
+                    className="p-2 font-bold text-sm text-gray-500 cursor-pointer hover:bg-gray-100"
                   >
                     {curr.name}
                   </Combobox.Option>
