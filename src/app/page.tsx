@@ -12,10 +12,10 @@ const CUR_EUR = defCurrencies.find((curr) => curr.name === 'EUR')!
 
 export default function Home() {
   const [tasks, setTasks] = useState<ITask[]>([])
-  const [newTask, setNewTask] = useState({ desc: '' })
+  const [newTask, setNewTask] = useState({ desc: '', clientId: '' })
 
   const [rate, setRate] = useState(50)
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const [clients, setClients] = useState<IClient[]>(() => [
     Client.with({ name: 'One Two OU', rate: { currencyId: CUR_EUR.id, rate: 10 } }),
     Client.with({ name: 'Two Three OU', rate: { currencyId: CUR_EUR.id, rate: 20 } }),
@@ -26,21 +26,22 @@ export default function Home() {
 
   const handleClientPick = (client: IClient & { dirty: boolean }) => {
     if (client.dirty) {
-      console.log('should create & pick', client)
-    } else {
-      console.log('just pick', client)
+      console.log('should also create', client)
     }
+
+    setNewTask((val) => ({ ...val, clientId: client.id }))
+    setIsOpen(false)
   }
 
   const handleTaskCreate: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     setTasks(tasks => ([...tasks, Task.with({ title: newTask.desc, createdAt: Date.now() })]))
-    setNewTask({ desc: '' })
+    setNewTask({ desc: '', clientId: '' })
   }
 
   const handleTaskDescChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const val = e.target.value
-    setNewTask({ desc: val })
+    setNewTask((task) => ({ ...task, desc: val }))
   }
 
   useEffect(() => {
@@ -83,6 +84,10 @@ export default function Home() {
     })
   }
 
+  const handleChooseClient = () => {
+    setIsOpen(true)
+  }
+
   return (
     <>
       <PickClientModal
@@ -94,12 +99,13 @@ export default function Home() {
       />
 
       <form className="flex bg-gray-100" onSubmit={handleTaskCreate}>
-        <div className="m-4 flex">
-          <button type="button" className="uppercase font-bold text-blue-600">start</button>
-        </div>
+        <button type="submit" className="uppercase font-bold text-sm text-blue-600 px-4 hover:bg-blue-50">start</button>
+        <button type="button" className="uppercase font-bold text-xs text-gray-500 px-4" onClick={handleChooseClient}>
+          {newTask.clientId ? clients.find((client) => newTask.clientId === client.id)!.name : 'no client'}
+        </button>
         <input
           type="text"
-          className="w-full p-4 bg-transparent"
+          className="flex-1 p-4 bg-transparent"
           placeholder="what are you working on?"
           onChange={handleTaskDescChange}
           value={newTask.desc}
