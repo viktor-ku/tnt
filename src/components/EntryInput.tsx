@@ -1,5 +1,5 @@
 import { IClient } from "@/entity/client"
-import { ICurrency } from "@/entity/currency"
+import { C_EUR, ICurrency } from "@/entity/currency"
 import { Entry, IEntry } from "@/entity/entry"
 import { ChangeEventHandler, useState } from "react"
 import CoreInput from "./CoreInput"
@@ -53,7 +53,7 @@ export default function EntryInput(props: Props) {
       </button>
       <div className="flex items-center w-12 pl-2">
         <CurrencyPicker
-          defaultCurrency={currencies.find((val) => val.id === defaultCurrencyId)!}
+          defaultCurrency={C_EUR}
           onSubmit={handleSelectCurrency}
           currencies={currencies}
           chip={true}

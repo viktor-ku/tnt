@@ -3,7 +3,7 @@
   grid-template-columns: 14rem 1fr;
   grid-template-rows: 3.5rem 1fr;
   grid-template-areas: 
-    "logo top"
+    "side top"
     "side main";
 }
 .logo {

@@ -1,7 +1,85 @@
-import clsx from 'clsx'
-import Link from 'next/link'
-import './globals.css'
+'use client'
+
+import './globals.css';
+import clsx from 'clsx';
+import Link from 'next/link';
 import styles from './layout.module.css'
+import { CalendarIcon, ChartBarIcon, FolderIcon, HomeIcon, InboxIcon, UsersIcon, PlayIcon, AdjustmentsVerticalIcon } from '@heroicons/react/24/outline'
+
+const navigation = [
+  { name: 'Dashboard', icon: HomeIcon, href: '#', current: true },
+  { name: 'Team', icon: UsersIcon, href: '#', count: 3, current: false },
+  { name: 'Projects', icon: FolderIcon, href: '#', count: 4, current: false },
+  { name: 'Calendar', icon: CalendarIcon, href: '#', current: false },
+  { name: 'Documents', icon: InboxIcon, href: '#', count: 12, current: false },
+  { name: 'Reports', icon: ChartBarIcon, href: '#', current: false },
+]
+
+function SideNav() {
+  return (
+    <div className="flex h-full flex-1 flex-col border-r border-gray-200 bg-white">
+      <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
+        <div className="flex flex-shrink-0 items-center px-4">
+          <img
+            className="h-8 w-auto"
+            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+            alt="Your Company"
+          />
+        </div>
+        <nav className="mt-5 flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
+          {navigation.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className={clsx(
+                item.current
+                  ? 'bg-gray-100 text-gray-900 hover:text-gray-900 hover:bg-gray-100'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50',
+                'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+              )}
+            >
+              <item.icon
+                className={clsx(
+                  item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+                  'mr-3 flex-shrink-0 h-6 w-6'
+                )}
+                aria-hidden="true"
+              />
+              <span className="flex-1">{item.name}</span>
+              {item.count ? (
+                <span
+                  className={clsx(
+                    item.current ? 'bg-white' : 'bg-gray-100 group-hover:bg-gray-200',
+                    'ml-3 inline-block py-0.5 px-3 text-xs font-medium rounded-full'
+                  )}
+                >
+                  {item.count}
+                </span>
+              ) : null}
+            </a>
+          ))}
+        </nav>
+      </div>
+      <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
+        <a href="#" className="group block w-full flex-shrink-0">
+          <div className="flex items-center">
+            <div>
+              <img
+                className="inline-block h-9 w-9 rounded-full"
+                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                alt=""
+              />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Tom Cook</p>
+              <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">View profile</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  )
+}
 
 export default function RootLayout({
   children,
@@ -12,30 +90,32 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body>
-        <div className={clsx("h-screen w-screen overflow-hidden", styles.body)}>
+        <div className={clsx("h-screen w-screen overflow-hidden flex")}>
 
-          <div className={clsx(styles.logo, "flex items-center")}>
-            <p className="text-xl text-blue-700 pl-2">
-              fancy.
-            </p>
-          </div>
-
-          <aside className={clsx("pt-1", styles.side)}>
-            <div className="grid gap-1">
-              <Link className="uppercase font-bold text-gray-700 text-sm p-0 pr-2 pl-2" href="/">Timers</Link>
-              <Link className="uppercase font-bold text-gray-700 text-sm p-0 pr-2 pl-2" href="/invoices">Invoices</Link>
-              <Link className="uppercase font-bold text-gray-700 text-sm p-0 pr-2 pl-2" href="/settings">Settings</Link>
-            </div>
+          <aside className={clsx("w-56")}>
+            <SideNav />
           </aside>
 
-          <header className={clsx(styles.header, "flex justify-end items-center pr-8")}>
-            <div>
-              <button className="uppercase font-bold text-blue-400 p-2 text-sm hover:bg-blue-50 transition">sign in</button>
+          <div className="w-[20rem] border-r border-gray-200 bg-white">
+            <div className="flex items-center">
+              <form className="flex relative flex-1 m-2">
+                <input type="text" className="border-none text-sm flex-1 rounded-lg bg-gray-100" placeholder="start typing task name..." />
+                <button
+                  className="absolute top-[.2rem] right-[.2rem] inline-flex items-center rounded-full border border-transparent bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  <PlayIcon className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </form>
+              <button
+                className="mr-2 inline-flex items-center rounded-full border border-transparent bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <AdjustmentsVerticalIcon className="h-5 w-5" aria-hidden="true" />
+              </button>
             </div>
-          </header>
+          </div>
 
           <main
-            className={clsx(styles.main, "bg-gray-50 overflow-y-scroll border-gray-100 border-t border-l rounded-md")}
+            className={clsx("bg-gray-50 overflow-y-scroll border-gray-100 flex-1")}
           >
             {children}
           </main>
