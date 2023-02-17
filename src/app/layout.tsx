@@ -4,15 +4,18 @@ import './globals.css';
 import clsx from 'clsx';
 import Link from 'next/link';
 import styles from './layout.module.css'
-import { CalendarIcon, ChartBarIcon, FolderIcon, HomeIcon, InboxIcon, UsersIcon, PlayIcon, AdjustmentsVerticalIcon } from '@heroicons/react/24/outline'
+import {
+  HomeIcon,
+  UsersIcon,
+  PlayIcon,
+  AdjustmentsVerticalIcon,
+  Cog8ToothIcon as CogIcon
+} from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Dashboard', icon: HomeIcon, href: '#', current: true },
-  { name: 'Team', icon: UsersIcon, href: '#', count: 3, current: false },
-  { name: 'Projects', icon: FolderIcon, href: '#', count: 4, current: false },
-  { name: 'Calendar', icon: CalendarIcon, href: '#', current: false },
-  { name: 'Documents', icon: InboxIcon, href: '#', count: 12, current: false },
-  { name: 'Reports', icon: ChartBarIcon, href: '#', current: false },
+  { name: 'Home', icon: HomeIcon, href: '#', current: true },
+  { name: 'Invoices', icon: UsersIcon, href: '/invoices', count: 3, current: false },
+  { name: 'Settings', icon: CogIcon, href: '/settings', current: false },
 ]
 
 function SideNav() {
@@ -28,7 +31,7 @@ function SideNav() {
         </div>
         <nav className="mt-5 flex-1 space-y-1 bg-white px-2" aria-label="Sidebar">
           {navigation.map((item) => (
-            <a
+            <Link
               key={item.name}
               href={item.href}
               className={clsx(
@@ -56,7 +59,7 @@ function SideNav() {
                   {item.count}
                 </span>
               ) : null}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>
