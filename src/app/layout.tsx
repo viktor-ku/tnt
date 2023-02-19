@@ -11,7 +11,6 @@ import {
   AdjustmentsVerticalIcon,
   Cog8ToothIcon as CogIcon
 } from '@heroicons/react/24/outline'
-import { randomUUID } from 'crypto';
 import { Entry } from '@/entity/entry';
 
 const navigation = [
@@ -85,34 +84,6 @@ function SideNav() {
         </div>
       </div>
     </aside>
-  )
-}
-
-function EntriesCol() {
-  return (
-    <div className="w-[32rem] border-r border-gray-200 bg-white">
-      <div className="flex items-center">
-        <form className="flex relative flex-1 m-2">
-          <input type="text" className="border-none text-sm flex-1 rounded-lg bg-gray-100" placeholder="start typing task name..." />
-          <button
-            className="absolute top-[.2rem] right-[.2rem] inline-flex items-center rounded-full border border-transparent bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            <PlayIcon className="h-5 w-5" aria-hidden="true" />
-          </button>
-        </form>
-        <button
-          className="mr-2 inline-flex items-center rounded-full border border-transparent bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          <AdjustmentsVerticalIcon className="h-5 w-5" aria-hidden="true" />
-        </button>
-      </div>
-
-      <div className="bg-pink-100 grid grid-cols-1 gap-2">
-        {Array(10).fill(0).map((_, i) => Entry.with({ task: `task #${i + 1}` })).map((entry) => (
-          <div key={entry.id}>{entry.task}</div>
-        ))}
-      </div>
-    </div>
   )
 }
 
