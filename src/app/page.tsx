@@ -2,8 +2,9 @@
 
 import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { Entry, IEntry } from '@/entity/entry'
-import { useMemo, useState } from "react";
+import { forwardRef, useMemo, useRef, useState } from "react";
 import { PlayIcon } from "@heroicons/react/24/solid";
+import CreateTimerScreen from "@/components/CreateTimerScreen";
 
 const fixedEntries = [
   Entry.with({ task: "XML parsing & bundling", rate: 10 }),
@@ -48,8 +49,21 @@ export default function Home() {
     debugColumns: true,
   })
 
+  const originalInputRef = useRef<HTMLInputElement | null>(null)
+
+  const [open, setOpen] = useState(false)
+
   return (
     <div>
+
+      <CreateTimerScreen
+        open={open}
+        clients={[]}
+        currencies={[]}
+        onClose={() => { }}
+        onSubmit={() => { }}
+        originalInputRef={originalInputRef}
+      />
 
       <div className="bg-indigo-500 w-full h-64 -mb-48"></div>
 
@@ -57,11 +71,14 @@ export default function Home() {
         <p className="lowercase font-normal text-5xl text-white select-none mb-4">Tasks!</p>
 
         <div className="bg-white shadow-lg mb-4 flow-root mt-2">
-          <input 
-            type="text" 
-            className="w-full p-4 text-lg focus:border-slate-700" 
+          <input
+            id="originalInputRef"
+            type="text"
+            className="w-full p-4 text-lg focus:border-slate-700"
             placeholder="I am working on..."
             tabIndex={0}
+            ref={originalInputRef}
+            onClick={() => setOpen(true)}
           />
         </div>
 
