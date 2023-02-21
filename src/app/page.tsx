@@ -1,8 +1,8 @@
 'use client';
 
-import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { Entry, IEntry } from '@/entity/entry'
-import { forwardRef, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, useRef, useState } from "react";
 import { PlayIcon } from "@heroicons/react/24/solid";
 import CreateTimerScreen from "@/components/CreateTimerScreen";
 
@@ -53,6 +53,12 @@ export default function Home() {
 
   const [open, setOpen] = useState(false)
 
+  const handleDescChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (!open) {
+      setOpen(true)
+    }
+  }
+
   return (
     <div>
 
@@ -72,13 +78,13 @@ export default function Home() {
 
         <div className="bg-white shadow-lg mb-4 flow-root mt-2">
           <input
-            id="originalInputRef"
             type="text"
             className="w-full p-4 text-lg focus:border-slate-700 z-50 relative"
             placeholder="I am working on..."
             tabIndex={0}
             ref={originalInputRef}
             onClick={() => setOpen(true)}
+            onChange={handleDescChange}
           />
         </div>
 
