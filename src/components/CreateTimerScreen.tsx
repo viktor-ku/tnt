@@ -1,6 +1,7 @@
 import { IClient } from '@/entity/client'
 import { C_EUR, ICurrency } from '@/entity/currency'
 import { Dialog, Combobox } from '@headlessui/react'
+import clsx from 'clsx'
 import { Ref, RefObject, useState } from 'react'
 
 export interface Props {
@@ -31,6 +32,25 @@ export default function CreateTimerScreen(props: Props) {
       <div className="fixed inset-0 bg-black/60" aria-hidden="true"></div>
 
       <div className="fixed inset-0" onClick={() => handleClose()}>
+
+        <div className="flex">
+
+          <div className="w-60"></div>
+          <div className="border-gray-100 flex-1 flex">
+
+            <div
+              className="bg-pink-100 h-screen mx-auto -translate-x-2"
+              style={{
+                width: "calc(66.1%)",
+              }}
+            >
+              hi
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
     </Dialog>
   )
