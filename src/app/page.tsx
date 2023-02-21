@@ -22,7 +22,7 @@ const columns = [
         </div>
         <div className="ml-4">
           <div className="font-medium text-gray-900">{data.getValue()}</div>
-          <div className="text-gray-500">EUR {data.row.original.clientId}/h</div>
+          <div className="text-gray-500">{data.row.original.clientId ? `${data.row.original.clientId}` : 'no client'}</div>
         </div>
       </div>
     ),
@@ -30,6 +30,11 @@ const columns = [
 ]
 
 export default function Home() {
+
+  // TODO:
+  // have normalized objects in the store
+  // select & transform them for the table
+
   const [entries, setEntries] = useState(() => fixedEntries)
 
   const table = useReactTable({
@@ -46,10 +51,20 @@ export default function Home() {
   return (
     <div>
 
-      <div className="bg-indigo-500 w-full h-48 -mb-24"></div>
+      <div className="bg-indigo-500 w-full h-64 -mb-48"></div>
 
       <div className="mx-auto w-2/3">
-        <p className="lowercase font-normal text-5xl text-white select-none">Tasks!</p>
+        <p className="lowercase font-normal text-5xl text-white select-none mb-4">Tasks!</p>
+
+        <div className="bg-white shadow-lg mb-4 flow-root mt-2">
+          <input 
+            type="text" 
+            className="w-full p-4 text-lg focus:border-slate-700" 
+            placeholder="I am working on..."
+            tabIndex={0}
+          />
+        </div>
+
         <div className="bg-white shadow-lg">
 
           <div className="px-6 lg:px-8 pb-2">
@@ -85,25 +100,6 @@ export default function Home() {
                           ))}
                         </tr>
                       ))}
-                      {
-                        // <tr>
-                        //   <th scope="col" className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                        //     Name
-                        //   </th>
-                        //   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        //     Title
-                        //   </th>
-                        //   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        //     Status
-                        //   </th>
-                        //   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        //     Role
-                        //   </th>
-                        //   <th scope="col" className="relative py-3.5 pl-3 pr-6 sm:pr-0">
-                        //     <span className="sr-only">Edit</span>
-                        //   </th>
-                        // </tr>
-                      }
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
 
@@ -124,40 +120,6 @@ export default function Home() {
                           </tr>
                         )
                       })}
-
-
-                      {/*
-                      {people.map((person) => (
-                        <tr key={person.email}>
-                          <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm sm:pl-0">
-                            <div className="flex items-center">
-                              <div className="h-10 w-10 flex-shrink-0">
-                                <img className="h-10 w-10 rounded-full" src={person.image} alt="" />
-                              </div>
-                              <div className="ml-4">
-                                <div className="font-medium text-gray-900">{person.name}</div>
-                                <div className="text-gray-500">{person.email}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <div className="text-gray-900">{person.title}</div>
-                            <div className="text-gray-500">{person.department}</div>
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                              Active
-                            </span>
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td>
-                          <td className="relative whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm font-medium sm:pr-0">
-                            <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                              Edit<span className="sr-only">, {person.name}</span>
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                      */}
 
                     </tbody>
                   </table>
