@@ -60,7 +60,7 @@ export default function Home() {
         open={open}
         clients={[]}
         currencies={[]}
-        onClose={() => { }}
+        onClose={() => setOpen(false)}
         onSubmit={() => { }}
         originalInputRef={originalInputRef}
       />

@@ -7,7 +7,7 @@ export interface Props {
   open: boolean
   clients: IClient[]
   currencies: ICurrency[]
-  onClose(value: boolean): void
+  onClose(): void
   onSubmit(data: IClient & { dirty: boolean }): void
   originalInputRef: RefObject<HTMLInputElement | null>
 }
@@ -22,12 +22,15 @@ export default function CreateTimerScreen(props: Props) {
   const offsetLeft = originalInputRef?.current?.offsetLeft
   const width = originalInputRef?.current?.clientWidth
 
+  function handleClose() {
+    onClose()
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
       <div className="fixed inset-0 bg-black/60" aria-hidden="true"></div>
 
-      <div className="fixed inset-0">
-
+      <div className="fixed inset-0" onClick={() => handleClose()}>
       </div>
     </Dialog>
   )
