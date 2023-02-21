@@ -28,14 +28,6 @@ export default function CreateTimerScreen(props: Props) {
 
       <div className="fixed inset-0">
 
-        <input
-          type="text"
-          className="w-full p-4 text-lg focus:border-slate-700 fixed"
-          style={{top: offsetTop, left: offsetLeft, width}}
-          placeholder="I am working on..."
-          tabIndex={0}
-        />
-
       </div>
     </Dialog>
   )

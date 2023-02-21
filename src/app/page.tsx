@@ -74,7 +74,7 @@ export default function Home() {
           <input
             id="originalInputRef"
             type="text"
-            className="w-full p-4 text-lg focus:border-slate-700"
+            className="w-full p-4 text-lg focus:border-slate-700 z-50 relative"
             placeholder="I am working on..."
             tabIndex={0}
             ref={originalInputRef}
